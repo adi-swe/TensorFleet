@@ -1,0 +1,62 @@
+{
+  "started_at": "2026-10-16T03:46:44.994566+00:00",
+  "checks": [
+    {
+      "name": "unsupported_algorithm",
+      "passed": true,
+      "response": {
+        "error": "unsupported fleet algorithm"
+      }
+    },
+    {
+      "name": "invalid_epochs",
+      "passed": true,
+      "response": {
+        "error": "fleet training requires epochs=1 and hyperparameters.target_column"
+      }
+    },
+    {
+      "name": "missing_target",
+      "passed": true,
+      "response": {
+        "error": "fleet training requires epochs=1 and hyperparameters.target_column"
+      }
+    },
+    {
+      "name": "missing_dataset_fails_without_success_manifest",
+      "passed": true,
+      "job_state": {
+        "completed_tasks": 0,
+        "current_accuracy": 0,
+        "current_loss": 0,
+        "job_id": "9b72dc40-4ba2-4786-b89b-afb5f15b7bfa",
+        "message": "real training failed: exit status 1: HTTPError: 404 Client Error: NOT FOUND for url: http://storage:8081/api/v1/download/datasets/mnist/does-not-exist.npz\n",
+        "progress": 0,
+        "status": "FAILED",
+        "total_tasks": 1
+      }
+    },
+    {
+      "name": "storage_outage_fails_without_success_manifest",
+      "passed": true,
+      "job_state": {
+        "completed_tasks": 0,
+        "current_accuracy": 0,
+        "current_loss": 0,
+        "job_id": "c76b78c2-2ec1-46d0-a8b8-11337f4f76cc",
+        "message": "real training failed: exit status 1: ConnectionError: HTTPConnectionPool(host='storage', port=8081): Max retries exceeded with url: /api/v1/download/datasets/mnist/731c5ac60275/train-split2026.npz (Caused by NameResolutionError(\"HTTPConnection(host='storage', port=8081): Failed to resolve 'storage' ([Errno -2] Name or service not known)\"))\n",
+        "progress": 0,
+        "status": "FAILED",
+        "total_tasks": 1
+      }
+    },
+    {
+      "name": "minio_restart_preserves_datasets_models_and_manifests",
+      "passed": true,
+      "checksummed_objects": 6,
+      "manifests": 3
+    }
+  ],
+  "status": "passed",
+  "finished_at": "2026-10-16T03:46:49.629202+00:00"
+}

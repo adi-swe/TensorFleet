@@ -89,12 +89,12 @@ const WorkerVisualization = () => {
 
       // Calculate average resource usage
       const activeWorkers = workersData.filter(w => w.is_active);
-      const avgCpu = activeWorkers.length > 0
-        ? Math.round(activeWorkers.reduce((sum, w) => sum + (w.cpu_usage || 0), 0) / activeWorkers.length)
-        : 0;
-      const avgMemory = activeWorkers.length > 0
-        ? Math.round(activeWorkers.reduce((sum, w) => sum + (w.memory_usage || 0), 0) / activeWorkers.length)
-        : 0;
+      const averageMeasured = (key) => {
+        const measured = activeWorkers.map(worker => worker[key]).filter(value => Number.isFinite(value) && value >= 0);
+        return measured.length ? Math.round(measured.reduce((sum, value) => sum + value, 0) / measured.length) : null;
+      };
+      const avgCpu = averageMeasured('cpu_usage');
+      const avgMemory = averageMeasured('memory_usage');
 
       setWorkerStats({
         total: response.data.total_workers || workersData.length,
@@ -225,7 +225,7 @@ const WorkerVisualization = () => {
           <StatCard
             title="Avg CPU"
             subtitle="Across active workers"
-            value={`${workerStats.avgCpu || 0}%`}
+            value={Number.isFinite(workerStats.avgCpu) ? `${workerStats.avgCpu}%` : 'Not measured'}
             icon={CpuIcon}
             color="info"
             loading={loading}
@@ -235,7 +235,7 @@ const WorkerVisualization = () => {
           <StatCard
             title="Avg Memory"
             subtitle="Across active workers"
-            value={`${workerStats.avgMemory || 0}%`}
+            value={Number.isFinite(workerStats.avgMemory) ? `${workerStats.avgMemory}%` : 'Not measured'}
             icon={MemoryIcon}
             color="secondary"
             loading={loading}
@@ -318,17 +318,17 @@ const WorkerVisualization = () => {
                             <Typography
                               variant="caption"
                               component="div"
-                              sx={{ fontWeight: 700, color: `${usageLevel(worker.cpu_usage)}.main` }}
+                              sx={{ fontWeight: 700, color: Number.isFinite(worker.cpu_usage) && worker.cpu_usage >= 0 ? `${usageLevel(worker.cpu_usage)}.main` : 'text.secondary' }}
                             >
-                              {worker.cpu_usage || 0}%
+                              {Number.isFinite(worker.cpu_usage) && worker.cpu_usage >= 0 ? `${worker.cpu_usage}%` : 'Not measured'}
                             </Typography>
                           </Box>
-                          <LinearProgress
+                          {Number.isFinite(worker.cpu_usage) && worker.cpu_usage >= 0 && <LinearProgress
                             variant="determinate"
-                            value={worker.cpu_usage || 0}
+                            value={worker.cpu_usage}
                             color={usageLevel(worker.cpu_usage)}
                             sx={{ mb: 1 }}
-                          />
+                          />}
                           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
                             <Typography variant="caption" component="div">
                               Memory
@@ -336,16 +336,16 @@ const WorkerVisualization = () => {
                             <Typography
                               variant="caption"
                               component="div"
-                              sx={{ fontWeight: 700, color: `${usageLevel(worker.memory_usage)}.main` }}
+                              sx={{ fontWeight: 700, color: Number.isFinite(worker.memory_usage) && worker.memory_usage >= 0 ? `${usageLevel(worker.memory_usage)}.main` : 'text.secondary' }}
                             >
-                              {worker.memory_usage || 0}%
+                              {Number.isFinite(worker.memory_usage) && worker.memory_usage >= 0 ? `${worker.memory_usage}%` : 'Not measured'}
                             </Typography>
                           </Box>
-                          <LinearProgress
+                          {Number.isFinite(worker.memory_usage) && worker.memory_usage >= 0 && <LinearProgress
                             variant="determinate"
-                            value={worker.memory_usage || 0}
+                            value={worker.memory_usage}
                             color={usageLevel(worker.memory_usage)}
-                          />
+                          />}
                         </Box>
                       }
                     />

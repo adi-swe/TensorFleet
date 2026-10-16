@@ -1,5 +1,10 @@
 # TensorFleet - Distributed ML Training Platform
 
+> Current validated scope: real classical ML, tree-parallel forests on local CPU
+> workers, and native MPS logistic training. Repeated experiments and remaining
+> limitations are in [research evidence](result/research/README.md). Distributed
+> DL/LLM and cross-host/CUDA performance have not been validated.
+
 TensorFleet is a distributed machine learning training platform that orchestrates ML workloads across multiple compute nodes using modern microservices architecture, gRPC communication, and Kubernetes orchestration.
 
 
@@ -467,26 +472,18 @@ covering control-plane latency, worker-fleet scaling, and per-algorithm
 training throughput. Full methodology and analysis:
 [docs/PERFORMANCE_EVALUATION.md](docs/PERFORMANCE_EVALUATION.md).
 
-**Measured highlights** (Apple M4, all services native, 120-task workload):
+The current verified evidence and exact reproduction steps are in
+[`result/README.md`](result/README.md) and the newer
+[`result/research/`](result/research/) evidence bundle. These distinguish
+independent ML jobs, a single forest built from distributed tree partitions,
+and native Apple MPS logistic training. See
+[`docs/REAL_FLEET_TRAINING.md`](docs/REAL_FLEET_TRAINING.md) for supported paths.
 
-| Metric | Result |
-|---|---|
-| Worker scaling (1→8 workers) | **6.84× speedup, 85.5% parallel efficiency** |
-| Fleet throughput at 8 workers | 4.77 tasks/s (vs 0.70 at 1 worker) |
-| Gateway read latency | p50 ≈ 2 ms, p99 < 5 ms at ~7,000 req/s |
-| Job submission | 81 jobs/s sustained, zero errors |
-| Best model quality (worker-ml) | PyTorch MLP — 92.1% test accuracy |
-
-```bash
-# Reproduce the numbers (Go + Python required, no Docker needed)
-cd benchmarks && ./run_benchmarks.sh
-```
-
-Scaling is near-linear because workers *pull* tasks from the orchestrator —
-adding replicas requires no scheduler reconfiguration, and task leasing
-requeues work from failed workers automatically. Identified limits and the
-roadmap for removing them (externalized queue, streaming assignment) are
-documented in the evaluation.
+Earlier headline figures for simulated scaling, gateway throughput, and local
+model quality lacked their advertised raw files in the audited checkout. They
+are not validated results. Use the recorded source hashes, workload settings,
+raw trials, failures, and uncertainty in the new evidence. Single-host results
+do not establish multi-node, CUDA, LLM, or long-run reliability claims.
 
 ## 🧪 Testing & Validation
 

@@ -1,0 +1,28 @@
+services:
+  mongodb:
+    image: mongo:7.0
+    networks:
+      - tensorfleet-net
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+  storage:
+    environment:
+      MONGODB_URL: mongodb://mongodb:27017/tensorfleet_gap1
+      MONGODB_DB: tensorfleet_gap1
+    depends_on:
+      mongodb:
+        condition: service_healthy
+  worker:
+    cpus: 1
+    mem_limit: 2g
+    environment:
+      MAX_CONCURRENT_TASKS: "1"
+      FETCH_INTERVAL_MS: "100"
+  minio:
+    image: tensorfleet-gap1-minio:source-2025-10-15
+    build:
+      context: ./result/minio-build
+      dockerfile: Dockerfile

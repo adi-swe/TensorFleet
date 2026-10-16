@@ -1,0 +1,7 @@
+# Keep readable evidence trackable despite the repository-wide *.json rule.
+!*.json
+!**/*.json
+# Large artifacts and build/service logs are retained locally in this folder.
+*.pkl
+*.npz
+*.log

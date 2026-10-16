@@ -1,0 +1,270 @@
+{
+  "status": "passed",
+  "jobs": [
+    {
+      "trial": 1,
+      "request": {
+        "model_type": "fleet_accelerated_logistic",
+        "dataset_path": "datasets/mnist/731c5ac60275/train-split2026.npz",
+        "epochs": 1,
+        "hyperparameters": {
+          "target_column": "label",
+          "random_state": "43",
+          "device": "mps",
+          "validation_dataset_path": "datasets/mnist/731c5ac60275/validation-split2026.npz",
+          "test_dataset_path": "datasets/mnist/731c5ac60275/test-split2026.npz",
+          "estimator_params": "{\"epochs\": 30, \"batch_size\": 2048, \"learning_rate\": 0.01}"
+        }
+      },
+      "submission": {
+        "job_id": "bc088232-e5cd-423c-81e7-85661694a9c4",
+        "message": "Job created with 1 tasks",
+        "num_tasks": 1,
+        "status": "RUNNING"
+      },
+      "state": {
+        "completed_tasks": 1,
+        "current_accuracy": 0.9197,
+        "current_loss": 0.36738233691191,
+        "job_id": "bc088232-e5cd-423c-81e7-85661694a9c4",
+        "message": "s3://artifacts/fleet/bc088232-e5cd-423c-81e7-85661694a9c4/result.json",
+        "progress": 100,
+        "status": "COMPLETED",
+        "total_tasks": 1
+      },
+      "submission_to_terminal_observed_s": 9.226966000001994,
+      "metrics": {
+        "train_accuracy": 0.93754,
+        "test_accuracy": 0.9197,
+        "test_log_loss": 0.36738233691191,
+        "validation_accuracy": 0.9169,
+        "validation_log_loss": 0.36781161779582006,
+        "fit_time_s": 4.835008082998684,
+        "fit_time_scope": "preprocessing and estimator fit",
+        "elapsed_before_manifest_s": 5.622267958999146
+      },
+      "device": {
+        "requested": "mps",
+        "actual": "mps",
+        "torch": "2.8.0",
+        "platform": "Darwin",
+        "epochs_completed": 30,
+        "batch_size": 2048,
+        "learning_rate": 0.01,
+        "weight_decay": 0.0,
+        "device_name": "Apple GPU via Metal Performance Shaders"
+      },
+      "artifact_verified": true,
+      "worker_id": "721f7829-7a5c-424e-a360-59e5d033bd78"
+    },
+    {
+      "trial": 1,
+      "request": {
+        "model_type": "fleet_accelerated_logistic",
+        "dataset_path": "datasets/mnist/731c5ac60275/train-split2026.npz",
+        "epochs": 1,
+        "hyperparameters": {
+          "target_column": "label",
+          "random_state": "43",
+          "device": "cpu",
+          "validation_dataset_path": "datasets/mnist/731c5ac60275/validation-split2026.npz",
+          "test_dataset_path": "datasets/mnist/731c5ac60275/test-split2026.npz",
+          "estimator_params": "{\"epochs\": 30, \"batch_size\": 2048, \"learning_rate\": 0.01}"
+        }
+      },
+      "submission": {
+        "job_id": "b2c91b68-6647-40cd-998c-e5230612f634",
+        "message": "Job created with 1 tasks",
+        "num_tasks": 1,
+        "status": "RUNNING"
+      },
+      "state": {
+        "completed_tasks": 1,
+        "current_accuracy": 0.9199,
+        "current_loss": 0.3673719200355163,
+        "job_id": "b2c91b68-6647-40cd-998c-e5230612f634",
+        "message": "s3://artifacts/fleet/b2c91b68-6647-40cd-998c-e5230612f634/result.json",
+        "progress": 100,
+        "status": "COMPLETED",
+        "total_tasks": 1
+      },
+      "submission_to_terminal_observed_s": 10.24825150000106,
+      "metrics": {
+        "train_accuracy": 0.93758,
+        "test_accuracy": 0.9199,
+        "test_log_loss": 0.3673719200355163,
+        "validation_accuracy": 0.9169,
+        "validation_log_loss": 0.3670397294589122,
+        "fit_time_s": 3.720727625004656,
+        "fit_time_scope": "preprocessing and estimator fit",
+        "elapsed_before_manifest_s": 4.450481332998606
+      },
+      "device": {
+        "requested": "cpu",
+        "actual": "cpu",
+        "torch": "2.8.0",
+        "platform": "Darwin",
+        "epochs_completed": 30,
+        "batch_size": 2048,
+        "learning_rate": 0.01,
+        "weight_decay": 0.0,
+        "device_name": "CPU"
+      },
+      "artifact_verified": true,
+      "worker_id": "721f7829-7a5c-424e-a360-59e5d033bd78"
+    },
+    {
+      "trial": 0,
+      "request": {
+        "model_type": "fleet_accelerated_logistic",
+        "dataset_path": "datasets/mnist/731c5ac60275/train-split2026.npz",
+        "epochs": 1,
+        "hyperparameters": {
+          "target_column": "label",
+          "random_state": "42",
+          "device": "cpu",
+          "validation_dataset_path": "datasets/mnist/731c5ac60275/validation-split2026.npz",
+          "test_dataset_path": "datasets/mnist/731c5ac60275/test-split2026.npz",
+          "estimator_params": "{\"epochs\": 30, \"batch_size\": 2048, \"learning_rate\": 0.01}"
+        }
+      },
+      "submission": {
+        "job_id": "9b2436cc-8b99-43bd-9aa5-1a19c65d5058",
+        "message": "Job created with 1 tasks",
+        "num_tasks": 1,
+        "status": "RUNNING"
+      },
+      "state": {
+        "completed_tasks": 1,
+        "current_accuracy": 0.9196,
+        "current_loss": 0.3714120978221252,
+        "job_id": "9b2436cc-8b99-43bd-9aa5-1a19c65d5058",
+        "message": "s3://artifacts/fleet/9b2436cc-8b99-43bd-9aa5-1a19c65d5058/result.json",
+        "progress": 100,
+        "status": "COMPLETED",
+        "total_tasks": 1
+      },
+      "submission_to_terminal_observed_s": 10.77441112499946,
+      "metrics": {
+        "train_accuracy": 0.93832,
+        "test_accuracy": 0.9196,
+        "test_log_loss": 0.3714120978221252,
+        "validation_accuracy": 0.9164,
+        "validation_log_loss": 0.37840640552267185,
+        "fit_time_s": 3.6509561659986502,
+        "fit_time_scope": "preprocessing and estimator fit",
+        "elapsed_before_manifest_s": 4.387871790997451
+      },
+      "device": {
+        "requested": "cpu",
+        "actual": "cpu",
+        "torch": "2.8.0",
+        "platform": "Darwin",
+        "epochs_completed": 30,
+        "batch_size": 2048,
+        "learning_rate": 0.01,
+        "weight_decay": 0.0,
+        "device_name": "CPU"
+      },
+      "artifact_verified": true,
+      "worker_id": "721f7829-7a5c-424e-a360-59e5d033bd78"
+    },
+    {
+      "trial": 0,
+      "request": {
+        "model_type": "fleet_accelerated_logistic",
+        "dataset_path": "datasets/mnist/731c5ac60275/train-split2026.npz",
+        "epochs": 1,
+        "hyperparameters": {
+          "target_column": "label",
+          "random_state": "42",
+          "device": "mps",
+          "validation_dataset_path": "datasets/mnist/731c5ac60275/validation-split2026.npz",
+          "test_dataset_path": "datasets/mnist/731c5ac60275/test-split2026.npz",
+          "estimator_params": "{\"epochs\": 30, \"batch_size\": 2048, \"learning_rate\": 0.01}"
+        }
+      },
+      "submission": {
+        "job_id": "0ad712de-6f03-46c8-b22a-88bd933f658b",
+        "message": "Job created with 1 tasks",
+        "num_tasks": 1,
+        "status": "RUNNING"
+      },
+      "state": {
+        "completed_tasks": 1,
+        "current_accuracy": 0.9196,
+        "current_loss": 0.3714015712629914,
+        "job_id": "0ad712de-6f03-46c8-b22a-88bd933f658b",
+        "message": "s3://artifacts/fleet/0ad712de-6f03-46c8-b22a-88bd933f658b/result.json",
+        "progress": 100,
+        "status": "COMPLETED",
+        "total_tasks": 1
+      },
+      "submission_to_terminal_observed_s": 11.293098624999402,
+      "metrics": {
+        "train_accuracy": 0.93828,
+        "test_accuracy": 0.9196,
+        "test_log_loss": 0.3714015712629914,
+        "validation_accuracy": 0.9164,
+        "validation_log_loss": 0.37841220448371043,
+        "fit_time_s": 4.442520249998779,
+        "fit_time_scope": "preprocessing and estimator fit",
+        "elapsed_before_manifest_s": 5.228644666996843
+      },
+      "device": {
+        "requested": "mps",
+        "actual": "mps",
+        "torch": "2.8.0",
+        "platform": "Darwin",
+        "epochs_completed": 30,
+        "batch_size": 2048,
+        "learning_rate": 0.01,
+        "weight_decay": 0.0,
+        "device_name": "Apple GPU via Metal Performance Shaders"
+      },
+      "artifact_verified": true,
+      "worker_id": "721f7829-7a5c-424e-a360-59e5d033bd78"
+    }
+  ],
+  "scope": "Native single-device MPS versus CPU; no multi-GPU claim",
+  "case_order": [
+    [
+      1,
+      "mps"
+    ],
+    [
+      1,
+      "cpu"
+    ],
+    [
+      0,
+      "cpu"
+    ],
+    [
+      0,
+      "mps"
+    ]
+  ],
+  "summary": {
+    "mps": {
+      "trials": 2,
+      "mean_fit_time_s": 4.638764166498731,
+      "bootstrap_95pct_mean_fit_time_s": [
+        4.442520249998779,
+        4.835008082998684
+      ],
+      "sample_stdev_fit_time_s": 0.2775308082474458,
+      "mean_test_accuracy": 0.91965
+    },
+    "cpu": {
+      "trials": 2,
+      "mean_fit_time_s": 3.685841895501653,
+      "bootstrap_95pct_mean_fit_time_s": [
+        3.6509561659986502,
+        3.720727625004656
+      ],
+      "sample_stdev_fit_time_s": 0.049335871796425984,
+      "mean_test_accuracy": 0.9197500000000001
+    }
+  }
+}

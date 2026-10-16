@@ -1,0 +1,3 @@
+-r fleet-requirements.txt
+# Install natively on macOS for MPS. Linux CUDA installs need a compatible wheel/driver.
+torch>=2.8,<3

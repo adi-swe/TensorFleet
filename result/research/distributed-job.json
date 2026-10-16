@@ -1,0 +1,21 @@
+{
+  "request": {
+    "model_type": "fleet_distributed_random_forest",
+    "dataset_path": "datasets/mnist/731c5ac60275/train-split2026.npz",
+    "epochs": 1,
+    "num_workers": 2,
+    "hyperparameters": {
+      "target_column": "label",
+      "random_state": "42",
+      "validation_dataset_path": "datasets/mnist/731c5ac60275/validation-split2026.npz",
+      "test_dataset_path": "datasets/mnist/731c5ac60275/test-split2026.npz",
+      "estimator_params": "{\"n_estimators\": 40, \"max_depth\": 20, \"max_features\": \"sqrt\"}"
+    }
+  },
+  "submission": {
+    "job_id": "52e1e9de-36f4-4e02-9e10-3bed1fc524b3",
+    "message": "Job created with 3 tasks",
+    "num_tasks": 3,
+    "status": "RUNNING"
+  }
+}

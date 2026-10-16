@@ -1,0 +1,35 @@
+{
+  "captured_at": "2026-10-16T03:47:45.628714+00:00",
+  "containers": {
+    "tensorfleet-api-gateway": {
+      "running": true,
+      "status": "running",
+      "health": "healthy"
+    },
+    "tensorfleet-orchestrator": {
+      "running": true,
+      "status": "running",
+      "health": "healthy"
+    },
+    "tensorfleet-storage": {
+      "running": true,
+      "status": "running",
+      "health": "healthy"
+    },
+    "tensorfleet-minio": {
+      "running": true,
+      "status": "running",
+      "health": "healthy"
+    },
+    "tensorfleet-gap1-worker-1": {
+      "running": true,
+      "status": "running",
+      "health": "not configured"
+    },
+    "tensorfleet-gap1-worker-2": {
+      "running": true,
+      "status": "running",
+      "health": "not configured"
+    }
+  }
+}

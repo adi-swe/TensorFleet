@@ -1,0 +1,28 @@
+{
+  "captured_at": "2026-10-16T03:46:05.979569+00:00",
+  "scope": "One instantaneous Docker stats sample; not peak memory or average utilization",
+  "samples": [
+    {
+      "BlockIO": "2.39MB / 0B",
+      "CPUPerc": "0.14%",
+      "Container": "tensorfleet-gap1-worker-1",
+      "ID": "08639d747062",
+      "MemPerc": "0.76%",
+      "MemUsage": "15.48MiB / 2GiB",
+      "Name": "tensorfleet-gap1-worker-1",
+      "NetIO": "120MB / 97.4MB",
+      "PIDs": "13"
+    },
+    {
+      "BlockIO": "12.3kB / 0B",
+      "CPUPerc": "0.15%",
+      "Container": "tensorfleet-gap1-worker-2",
+      "ID": "896f984ff43a",
+      "MemPerc": "0.55%",
+      "MemUsage": "11.28MiB / 2GiB",
+      "Name": "tensorfleet-gap1-worker-2",
+      "NetIO": "60.3MB / 48.8MB",
+      "PIDs": "9"
+    }
+  ]
+}

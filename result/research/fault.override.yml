@@ -1,0 +1,4 @@
+services:
+  orchestrator:
+    environment:
+      TASK_LEASE_TIMEOUT_SECONDS: "20"

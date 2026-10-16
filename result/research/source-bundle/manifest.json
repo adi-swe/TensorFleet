@@ -1,0 +1,20 @@
+{
+  "worker/fleet_trainer.py": "d753c74765382df6316dfefbe705a8432ed4d9150b632cd63da30280a585e259",
+  "worker/accelerated_logistic.py": "a6913df656a47da4508eb88cd1294e8ddac51a9f1de272dd83cec7cd59f261c1",
+  "worker/main.go": "54980355baaaf5f8cb2e81dd4a257110198b87c623d915c7cc226553306d7408",
+  "worker/real_training.go": "dd6e374bd514f868586051db74a8d4edf47d0ce820be875ad610f2192f70cad6",
+  "orchestrator/cmd/orchestrator/main.go": "bd40628b40172536ea976b1197d5e09d57a905f8d4eb8e6b4c7e62b84ae76e41",
+  "orchestrator/cmd/orchestrator/recovery.go": "a1d447074111da328690cbb0ba449f9d2a9c0992f47cf2c6aaf7ce6a4c057a41",
+  "orchestrator/cmd/orchestrator/distributed_training.go": "264b203621b2d954f4b8ebeb7414610d91a29fb51c495d8d6443c3efee45280f",
+  "benchmarks/research_suite.py": "ab6d1e36d4fa56fa94356e0b618dc324cea90d3fe12fa472d55d2eb8e6bf2272",
+  "benchmarks/validate_mps.py": "9d580d14dbdba0bf02e36cfcc0cf6884fd980f8d1dd2754d59cd8df4d787538d",
+  "benchmarks/fault_trials.py": "ec388f5f6bcb20c39b809e5dc8fcca4bb217d83c6218a1baafcf60b65bd9af37",
+  "proto/orchestrator.proto": "07cde51d325f9f2125d98d86dab9984b656e61d5a38c2e54fe2beebee4eda9a3",
+  "proto/worker.proto": "17b6bc6e5fd9c249c6fe680f092e3005edc157ff7a30a0956ce84fd175434f04",
+  "benchmarks/operational_trials.py": "95456e1d033de74315f5dae8f2227e818988f44f81706b13826202674c161785",
+  "benchmarks/benchmark_gateway.py": "d1f9b94848ddd5304a799d3c9ef1caf140b0fca2bd26a3a421f8a326f864e6f2",
+  "worker/resource_plan.py": "22a6bba64c3637f96c0f95a10d57d07414856cabfb59688a86ff4dde8ec73ab6",
+  "worker/fleet-requirements.txt": "dd9b5584468cea3a9473c221c0a27199689821f387e21c2d8d2dc97a1fac40d9",
+  "worker/accelerator-requirements.txt": "67d2e74d7efa60439e3be08624d5f2a5a9f976f4ad00889ccba3a79f3bc034e4",
+  "worker/Dockerfile": "fec285f115b312bc53a70415cae2a681424a2b8d7cae6f5c6bcb9e36f27ffe85"
+}

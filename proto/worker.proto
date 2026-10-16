@@ -19,6 +19,7 @@ message TaskRequest {
   int32 epoch = 6;
   int32 batch_start = 7;
   int32 batch_end = 8;
+  string lease_token = 9;
 }
 
 message TaskResponse {

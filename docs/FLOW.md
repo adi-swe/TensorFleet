@@ -5,8 +5,10 @@ Updated 16 October 2026 for `feat/real-fleet-training`.
 TensorFleet accepts jobs through its Go API gateway and distributes tasks to
 Go workers through the orchestrator's pull queue. Jobs using an explicit
 `fleet_*` model type execute real scikit-learn training inside the assigned
-worker. Multiple independent jobs can run across the fleet; each model is fitted
-entirely on one worker.
+worker. Basic estimators fit on one worker. `fleet_distributed_random_forest`
+fits disjoint tree ranges on several CPU workers and aggregates one model.
+`fleet_accelerated_logistic` runs on a compatible native CPU, MPS, or CUDA worker.
+Apple GPU workers run natively; the Docker deployment uses CPU workers.
 
 ## 1. Entry points and execution paths
 
@@ -93,15 +95,19 @@ parameters, to match the existing API/protobuf map.
    `CreateTrainingJob` over gRPC.
 2. The orchestrator validates the fleet algorithm, `epochs=1`, and the required
    target column. Invalid fleet requests return HTTP 400 through the gateway.
-3. It creates exactly one task for the complete model fit, registers the job
-   as `RUNNING`, and enqueues the task if queue capacity is available.
-4. It attempts to persist the job snapshot to Redis. The queue, leases, and
-   completion-deduplication state remain in memory.
-5. The gateway returns HTTP 202 with `job_id`, `status`, and `num_tasks=1`.
+3. It persists the initial private snapshot in Redis before admitting work.
+   A persistence failure returns HTTP 503 without enqueueing an orphan job.
+   Queue saturation returns HTTP 429 with `Retry-After`.
+4. Basic estimators enqueue one complete fit. A distributed forest enqueues N
+   tree shards and retains one waiting aggregation task. Live leases and queues
+   are in memory; durable task snapshots enable coordinator restart recovery.
+5. The gateway returns HTTP 202 with `job_id`, `status`, and `num_tasks`
+   (one for a basic fit, N+1 for a distributed forest).
 
-`epochs` defaults to one for fleet jobs. A random forest is not divided into
-independent epoch/batch fits. `num_workers` does not reserve workers or split
-one model: deployment replicas and worker task slots determine concurrency.
+`epochs` defaults to one for fleet jobs. A forest is divided by deterministic
+ranges of trees, never independent epoch/batch fits. `num_workers` specifies
+shards for distributed forests and does not reserve physical workers. Deployment
+replicas and available worker task slots determine concurrency.
 
 ## 4. Worker execution and verified completion
 
@@ -200,9 +206,12 @@ currently use object storage rather than the model-registry UI.
 - If a worker disappears, the existing lease reaper can requeue its task.
   Unique attempt paths preserve separate model objects, but result-manifest
   publication is not an exactly-once transaction.
-- Redis snapshots do not reconstruct the full pending queue and leases after
-  an orchestrator restart. Worker retries, MinIO persistence, and coordinator
-  recovery are separate guarantees.
+- Private Redis snapshots restore unfinished tasks on coordinator startup with
+  fresh lease tokens. Completed task IDs prevent duplicate accounting; stale
+  attempts cannot complete a newer lease. Admission requires Redis persistence
+  unless `ALLOW_EPHEMERAL_JOBS=true` is explicitly enabled. Recovery assumes
+  Redis state survives; it does not provide checkpoint resume or exactly-once
+  artifact publication.
 
 ## 7. MNIST experiment and saved evidence
 
@@ -234,6 +243,39 @@ The Docker test deployment uses local MongoDB, Redis, and MinIO, with the
 from a pinned official upstream source revision. The frontend, separate
 `worker-ml` service, and model-registry UI were not part of that test.
 
-This flow establishes real execution of independent ML jobs and verified
-artifacts. Controlled sequential/native baselines, repeated scaling trials,
-and collaborative training of one model across workers remain future work.
+The original experiment establishes independent fits and verified artifacts.
+The subsequent flow below adds distributed forest construction, repeated scaling
+trials and direct process-pool controls. Distributed neural training remains open.
+
+## 8. Distributed forest and native accelerator flow
+
+```mermaid
+flowchart TD
+    Submit[Submit fleet job] --> Persist[Persist initial job in Redis]
+    Persist --> Kind{Algorithm}
+    Kind -->|distributed forest| Shards[N CPU tree-shard tasks]
+    Shards --> Stored[Verified shard models and manifests in storage]
+    Stored --> Aggregate[One aggregation task after all shards succeed]
+    Aggregate --> Forest[Verified portable forest and held-out metrics]
+    Kind -->|accelerated logistic| Match[Match requested device to worker capability]
+    Match --> Native[One native MPS / CUDA / CPU fit]
+    Native --> Portable[Export sklearn coefficients and verify predictions]
+    Forest --> Done[Accept completion with current lease token]
+    Portable --> Done
+    Done --> Snapshot[Persist completion state]
+```
+
+For a distributed forest, `num_workers` specifies N shards, not reserved physical
+workers. There are N+1 successful tasks including aggregation. Global per-tree
+seeds stay identical across shard counts. Every shard receives the full training
+data; this distributes trees, not data capacity. Aggregation checks hashes,
+preprocessing, classes, versions, and tree ranges before joining estimators.
+
+Workers advertise supported algorithm/device pairs. Incompatible tasks remain
+deferred while compatible CPU work proceeds. `worker/launch_fleet.py` starts a
+conservative number of native workers based on estimated memory and CPU limits.
+The planner is a heuristic; measured performance can favor fewer workers. One
+M4 GPU is a single accelerator, not three independently addressable GPUs.
+
+The repeated experiments, baselines, fault injections and remaining limitations
+are indexed in [research results](../result/research/README.md).

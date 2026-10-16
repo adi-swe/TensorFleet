@@ -45,26 +45,35 @@ def do_request(method, url, body=None):
     return time.perf_counter() - start, ok
 
 
-def run_scenario(name, method, url, body, concurrency, total_requests):
+def run_scenario(name, method, url, body, concurrency, total_requests, duration_s=0):
     print(f'  {name}: {total_requests} requests @ concurrency {concurrency} ...',
           flush=True)
-    latencies, errors = [], 0
+    latencies, successful_latencies, errors = [], [], 0
     wall_start = time.perf_counter()
     with ThreadPoolExecutor(max_workers=concurrency) as pool:
-        futures = [
-            pool.submit(do_request, method, url, body)
-            for _ in range(total_requests)
-        ]
-        for future in futures:
-            latency, ok = future.result()
-            latencies.append(latency)
-            if not ok:
-                errors += 1
+        while True:
+            futures = [pool.submit(do_request, method, url, body) for _ in range(total_requests)]
+            for future in futures:
+                latency, ok = future.result()
+                latencies.append(latency)
+                if ok:
+                    successful_latencies.append(latency)
+                else:
+                    errors += 1
+            if not duration_s or time.perf_counter() - wall_start >= duration_s:
+                break
+    total_requests = len(latencies)
     wall = time.perf_counter() - wall_start
 
     latencies.sort()
     result = {
         'scenario': name,
+        'load_model': 'closed_loop_fixed_client_concurrency',
+        'latency_samples_ms': [round(value * 1000, 4) for value in latencies],
+        'successful_latency_ms': {
+            'p50': round(percentile(sorted(successful_latencies), 50)*1000, 2) if successful_latencies else None,
+            'p99': round(percentile(sorted(successful_latencies), 99)*1000, 2) if successful_latencies else None,
+        },
         'method': method,
         'url': url,
         'concurrency': concurrency,
@@ -72,6 +81,10 @@ def run_scenario(name, method, url, body, concurrency, total_requests):
         'errors': errors,
         'error_rate': errors / total_requests,
         'throughput_rps': round(total_requests / wall, 1),
+        'attempted_requests_per_second': round(total_requests / wall, 1),
+        'successful_requests_per_second': round((total_requests - errors) / wall, 1),
+        'duration_s': wall,
+        'latency_scope': 'all completed client calls, including errors/timeouts',
         'latency_ms': {
             'mean': round(statistics.mean(latencies) * 1000, 2),
             'p50': round(percentile(latencies, 50) * 1000, 2),
@@ -93,7 +106,12 @@ def main():
     parser.add_argument('--concurrency', type=int, default=16)
     parser.add_argument('--requests', type=int, default=400)
     parser.add_argument('--output', default=None)
+    parser.add_argument('--duration-seconds', type=float, default=0, help='Minimum duration per read endpoint; zero uses fixed request count')
+    parser.add_argument('--skip-submissions', action='store_true')
+    parser.add_argument('--job-id', help='Reuse an existing job; avoids seed writes in persistence-outage tests')
     args = parser.parse_args()
+    if args.requests < 8 or args.concurrency < 1 or args.duration_seconds < 0:
+        parser.error('Need requests >= 8, concurrency >= 1, and nonnegative duration')
 
     # Warm-up + reachability check
     _, ok = do_request('GET', f'{args.gateway}/health')
@@ -109,29 +127,34 @@ def main():
         'epochs': 1,
         'hyperparameters': {'job_name': 'gateway-benchmark-seed'},
     }
-    req = urllib.request.Request(
-        f'{args.gateway}/api/v1/jobs',
-        data=json.dumps(job_body).encode(), method='POST')
-    req.add_header('Content-Type', 'application/json')
-    req.add_header('X-User-ID', 'benchmark')
-    with urllib.request.urlopen(req, timeout=15) as resp:
-        seed_job_id = json.loads(resp.read())['job_id']
+    if args.job_id:
+        seed_job_id = args.job_id
+    else:
+        req = urllib.request.Request(
+            f'{args.gateway}/api/v1/jobs',
+            data=json.dumps(job_body).encode(), method='POST')
+        req.add_header('Content-Type', 'application/json')
+        req.add_header('X-User-ID', 'benchmark')
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            seed_job_id = json.loads(resp.read())['job_id']
+
+        # Status reads do not need active simulated training in the background.
+        do_request('DELETE', f'{args.gateway}/api/v1/jobs/{seed_job_id}')
 
     print(f'Benchmarking gateway at {args.gateway}')
     results = [
         run_scenario('GET /health', 'GET', f'{args.gateway}/health',
-                     None, args.concurrency, args.requests),
+                     None, args.concurrency, args.requests, args.duration_seconds),
         run_scenario('GET /worker-activity', 'GET',
                      f'{args.gateway}/worker-activity',
-                     None, args.concurrency, args.requests),
+                     None, args.concurrency, args.requests, args.duration_seconds),
         run_scenario('GET /api/v1/jobs/:id', 'GET',
                      f'{args.gateway}/api/v1/jobs/{seed_job_id}',
-                     None, args.concurrency, args.requests),
-        # Fewer POSTs: each creates a real job (10 queued tasks), and the
-        # orchestrator's backpressure rejects submissions once the queue fills.
-        run_scenario('POST /api/v1/jobs', 'POST', f'{args.gateway}/api/v1/jobs',
-                     job_body, args.concurrency, args.requests // 8),
+                     None, args.concurrency, args.requests, args.duration_seconds),
     ]
+    if not args.skip_submissions:
+        results.append(run_scenario('POST /api/v1/jobs', 'POST', f'{args.gateway}/api/v1/jobs',
+                                   job_body, args.concurrency, args.requests // 8))
 
     if args.output:
         with open(args.output, 'w') as f:

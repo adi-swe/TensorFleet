@@ -32,16 +32,21 @@ COPY worker/ ./
 
 RUN go mod tidy || true
 # Build only the main package to avoid conflict with generated proto packages
-RUN CGO_ENABLED=0 GOOS=linux go build -o worker ./main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -o worker .
 
 # Runtime stage
-FROM alpine:latest
+FROM python:3.11-slim
 
-RUN apk --no-cache add ca-certificates
+COPY worker/fleet-requirements.txt /tmp/fleet-requirements.txt
+RUN pip install --no-cache-dir -r /tmp/fleet-requirements.txt
 
 WORKDIR /root/
 
 COPY --from=builder /app/worker/worker .
+COPY worker/fleet_trainer.py .
+COPY worker/training/ ./training/
+
+ENV OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
 
 EXPOSE 50052 2112
 
