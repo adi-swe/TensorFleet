@@ -23,22 +23,19 @@
 
 TensorFleet is a sophisticated distributed machine learning platform designed to democratize access to large-scale ML training capabilities. Built using modern microservices architecture, the platform enables organizations to efficiently train machine learning models across distributed computing resources while providing comprehensive monitoring, management, and scalability features.
 
-### Key Achievements
-- **Distributed Training**: Successfully implemented distributed ML training across multiple worker nodes
-- **Microservices Architecture**: Developed 12+ independent, scalable services
-- **Real-time Monitoring**: Comprehensive metrics collection and visualization
-- **Auto-scaling**: Dynamic worker scaling based on workload demands
-- **Web Interface**: Intuitive React-based dashboard for job management
-- **High Availability**: Fault-tolerant design with health monitoring
-- **Container Orchestration**: Full Docker containerization with compose orchestration
-- **Kubernetes Ready**: Complete production-ready Kubernetes manifests with automated deployment
-- **Cloud Database**: MongoDB Atlas integration for managed, scalable database infrastructure
+### Validated implementation and scope
 
-### Business Impact
-- **Cost Reduction**: Up to 60% reduction in training time through distributed processing
-- **Scalability**: Support for 1-10+ worker nodes with automatic scaling
-- **Accessibility**: Web-based interface eliminates need for ML infrastructure expertise
-- **Reliability**: 99.5% uptime with automatic failure recovery
+The current implementation runs real classical estimators through the worker
+fleet, combines deterministic forest shards into one saved model, and supports
+native Apple MPS logistic training. Five repeated trials per scaling configuration
+on one Mac compare 1/2/4 CPU workers with a direct process pool. Four-worker MNIST
+was slower than two-worker training; MPS logistic was slower than CPU for the
+measured workload. Raw evidence is indexed in `result/research/README.md`.
+
+Worker and coordinator interruption checks exercise retry and Redis-based task
+recovery. No measured uptime, cost saving, automatic performance-optimal scaling,
+production readiness, multi-host acceleration, or distributed DL/LLM result is
+claimed. Earlier percentage savings and uptime figures are withdrawn.
 
 ---
 
@@ -325,31 +322,18 @@ def monitor_and_scale():
 
 ## 8. Performance Analysis
 
-### 8.1 Scalability Metrics
-- **Horizontal Scaling**: Linear performance improvement up to 50 workers
-- **Throughput**: 1000+ concurrent jobs supported
-- **Response Time**: <100ms API response times
-- **Resource Efficiency**: 85% average resource utilization
+The earlier performance figures in this section were not backed by the raw
+results advertised in the repository. They have been withdrawn as validated
+results. In particular, the earlier claims about 50 workers, 1,000 concurrent
+jobs, 3–10× faster training, utilization, fault-recovery time, uptime, failure
+rate, and zero data loss must not be cited as experimental findings.
 
-### 8.2 Training Performance
-- **Speed Improvement**: 3-10x faster training with distributed workers
-- **Model Accuracy**: Maintained accuracy with distributed training
-- **Convergence**: Consistent convergence across different model types
-- **Fault Recovery**: <30 seconds average recovery time
+Use [the evaluation methodology](PERFORMANCE_EVALUATION.md),
+[the saved MNIST evidence](../result/README.md), and
+[the gap-by-gap audit](../scale.md) for current implementation status and
+bounded conclusions. The historical report's broader architecture and production
+capabilities also require checking against the implemented flow in [FLOW.md](FLOW.md).
 
-### 8.3 System Reliability
-- **Uptime**: 99.5% system availability
-- **Error Rate**: <0.1% job failure rate
-- **Recovery Time**: <2 minutes average incident resolution
-- **Data Integrity**: Zero data loss incidents
-
-### 8.4 Cost Optimization
-- **Resource Savings**: 40-60% cost reduction vs traditional setups
-- **Auto-scaling Efficiency**: 30% improvement in resource utilization
-- **Energy Efficiency**: 25% reduction in power consumption
-- **ROI**: 300% return on investment within 6 months
-
----
 
 ## 9. Future Enhancements
 

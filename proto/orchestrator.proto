@@ -48,6 +48,7 @@ message GetJobStatusResponse {
 
 message AssignTaskRequest {
   string worker_id = 1;
+  repeated string capabilities = 2;
 }
 
 message AssignTaskResponse {
@@ -59,6 +60,7 @@ message AssignTaskResponse {
   int32 epoch = 6;
   int32 batch_start = 7;
   int32 batch_end = 8;
+  string lease_token = 9;
 }
 
 message TaskCompletionRequest {
@@ -70,6 +72,7 @@ message TaskCompletionRequest {
   double loss = 6;
   double accuracy = 7;
   bytes model_weights = 8;
+  string lease_token = 9;
 }
 
 message TaskCompletionResponse {

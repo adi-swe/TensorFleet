@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/signal"
 	"strconv"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"syscall"
@@ -64,6 +65,7 @@ func init() {
 type WorkerServer struct {
 	workerpb.UnimplementedWorkerServiceServer
 	workerID           string
+	capabilities       []string
 	orchestratorClient orchestratorpb.OrchestratorServiceClient
 	currentTasks       atomic.Int64
 	completedTasks     atomic.Int64
@@ -106,6 +108,7 @@ func NewWorkerServer() (*WorkerServer, error) {
 
 	ws := &WorkerServer{
 		workerID:           workerID,
+		capabilities:       detectCapabilities(),
 		orchestratorClient: client,
 		taskSem:            make(chan struct{}, maxConcurrentTasks()),
 	}
@@ -150,32 +153,47 @@ func (ws *WorkerServer) ExecuteTask(ctx context.Context, req *workerpb.TaskReque
 		}, nil
 	}
 
-	// Simulate training
-	success, loss, accuracy := ws.simulateTraining(ctx, req)
+	var success bool
+	var loss, accuracy float64
+	message := "Task completed successfully"
+	if strings.HasPrefix(req.ModelType, "fleet_") {
+		var err error
+		loss, accuracy, message, err = ws.trainRealModel(ctx, req)
+		success = err == nil
+		if err != nil {
+			message = err.Error()
+		}
+	} else {
+		success, loss, accuracy = ws.simulateTraining(ctx, req)
+	}
 
 	duration := time.Since(start).Seconds()
 	taskDuration.Observe(duration)
 
 	if success {
-		tasksCompleted.Inc()
-		ws.completedTasks.Add(1)
 
 		// Report completion to orchestrator
 		reportCtx, cancel := context.WithTimeout(ctx, reportTimeout)
 		_, err := ws.orchestratorClient.ReportTaskCompletion(reportCtx, &orchestratorpb.TaskCompletionRequest{
-			TaskId:       req.TaskId,
-			JobId:        req.JobId,
-			WorkerId:     ws.workerID,
-			Success:      true,
-			Loss:         loss,
-			Accuracy:     accuracy,
-			ModelWeights: []byte{}, // Simulated weights
+			TaskId:     req.TaskId,
+			JobId:      req.JobId,
+			WorkerId:   ws.workerID,
+			LeaseToken: req.LeaseToken,
+			Success:    true,
+			Loss:       loss,
+			Accuracy:   accuracy,
+			// Real artifacts travel through object storage, not gRPC payloads.
+			ModelWeights: []byte{},
 		})
 		cancel()
 
 		if err != nil {
 			log.Printf("Failed to report task completion: %v", err)
+			tasksFailed.Inc()
+			return &workerpb.TaskResponse{TaskId: req.TaskId, Success: false, Message: "Completion acknowledgement failed: " + err.Error()}, nil
 		}
+		tasksCompleted.Inc()
+		ws.completedTasks.Add(1)
 
 		log.Printf("Task %s completed successfully. Loss: %.4f, Accuracy: %.4f",
 			req.TaskId, loss, accuracy)
@@ -183,7 +201,7 @@ func (ws *WorkerServer) ExecuteTask(ctx context.Context, req *workerpb.TaskReque
 		return &workerpb.TaskResponse{
 			TaskId:       req.TaskId,
 			Success:      true,
-			Message:      "Task completed successfully",
+			Message:      message,
 			Loss:         loss,
 			Accuracy:     accuracy,
 			ModelWeights: []byte{},
@@ -191,10 +209,20 @@ func (ws *WorkerServer) ExecuteTask(ctx context.Context, req *workerpb.TaskReque
 	}
 
 	tasksFailed.Inc()
+	if strings.HasPrefix(req.ModelType, "fleet_") {
+		reportCtx, cancel := context.WithTimeout(context.Background(), reportTimeout)
+		defer cancel()
+		if _, err := ws.orchestratorClient.ReportTaskCompletion(reportCtx, &orchestratorpb.TaskCompletionRequest{
+			TaskId: req.TaskId, JobId: req.JobId, WorkerId: ws.workerID, LeaseToken: req.LeaseToken,
+			Success: false, ErrorMessage: message,
+		}); err != nil {
+			log.Printf("Failed to report training failure: %v", err)
+		}
+	}
 	return &workerpb.TaskResponse{
 		TaskId:  req.TaskId,
 		Success: false,
-		Message: "Task failed during training",
+		Message: message,
 	}, nil
 }
 
@@ -249,8 +277,8 @@ func (ws *WorkerServer) GetWorkerStatus(ctx context.Context, req *workerpb.Worke
 		Status:         "ACTIVE",
 		CurrentTasks:   int32(ws.currentTasks.Load()),
 		CompletedTasks: int32(ws.completedTasks.Load()),
-		CpuUsage:       rand.Float64() * 100,
-		MemoryUsage:    rand.Float64() * 100,
+		CpuUsage:       -1, // Unknown: never fabricate utilization.
+		MemoryUsage:    -1,
 	}, nil
 }
 
@@ -299,7 +327,8 @@ func (ws *WorkerServer) fetchAndExecuteTask(ctx context.Context) {
 	defer cancel()
 
 	resp, err := ws.orchestratorClient.AssignTask(taskCtx, &orchestratorpb.AssignTaskRequest{
-		WorkerId: ws.workerID,
+		WorkerId:     ws.workerID,
+		Capabilities: ws.capabilities,
 	})
 
 	if err != nil {
@@ -318,6 +347,7 @@ func (ws *WorkerServer) fetchAndExecuteTask(ctx context.Context) {
 		Epoch:           resp.Epoch,
 		BatchStart:      resp.BatchStart,
 		BatchEnd:        resp.BatchEnd,
+		LeaseToken:      resp.LeaseToken,
 	}
 
 	ws.taskWG.Add(1)

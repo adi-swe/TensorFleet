@@ -14,10 +14,24 @@ def main():
         print('Usage: report_scaling.py <scaling_w*.json> ...', file=sys.stderr)
         sys.exit(1)
 
+    def read_run(path):
+        with open(path) as source: return json.load(source)
+
     runs = sorted(
-        (json.load(open(path)) for path in sys.argv[1:]),
+        (read_run(path) for path in sys.argv[1:]),
         key=lambda r: r['workers'],
     )
+    if not runs or runs[0]['workers'] != 1:
+        raise ValueError('A valid one-worker baseline is required')
+    signature = lambda r: (r['jobs'], r['epochs_per_job'], r['total_tasks'], r.get('workload_kind'))
+    for run in runs:
+        if (run.get('schema_version') != 2 or run.get('valid') is not True
+                or run.get('timed_out') or run.get('failed_jobs') or run.get('cancelled_jobs')
+                or run.get('unfinished_jobs') or run['completed_jobs'] != run['jobs']
+                or run.get('actual_completed_tasks') != run['total_tasks']
+                or len(run.get('observed_worker_ids', [])) != run['workers']
+                or run['makespan_s'] <= 0 or signature(run) != signature(runs[0])):
+            raise ValueError('Cannot compare invalid or mismatched scaling trials')
     baseline = runs[0]
 
     print(f"\nWorkload: {baseline['jobs']} jobs x {baseline['epochs_per_job']} "

@@ -66,6 +66,8 @@ def main():
             'framework': 'scikit-learn',
             'training_time_s': round(elapsed, 3),
             'samples_per_second': round(len(X_train) / elapsed),
+            'throughput_unit': 'input_training_rows_per_complete_trainer_call_second',
+            'input_training_rows': len(X_train),
             'test_accuracy': round(metrics['test_accuracy'], 4),
         })
         print(f"  {algo:22s} {elapsed:7.2f}s "
@@ -82,12 +84,16 @@ def main():
             _, metrics = train_pytorch_model(
                 algo, X_train, X_test, y_train, y_test, params)
             elapsed = time.perf_counter() - start
-            total_samples = len(X_train) * args.epochs
+            total_samples = metrics['examples_processed']
             results.append({
                 'algorithm': algo,
                 'framework': f'pytorch ({device})',
                 'training_time_s': round(elapsed, 3),
                 'samples_per_second': round(total_samples / elapsed),
+                'throughput_unit': 'actual_fit_examples_processed_per_complete_trainer_call_second',
+                'examples_processed': total_samples,
+                'epochs_completed': metrics['epochs_completed'],
+                'fit_with_validation_s': metrics['fit_with_validation_s'],
                 'test_accuracy': round(metrics['test_accuracy'], 4),
                 'parameters': metrics['num_parameters'],
             })

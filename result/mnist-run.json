@@ -1,0 +1,259 @@
+{
+  "schema_version": 1,
+  "started_at": "2026-10-16T03:45:37.984225+00:00",
+  "status": "passed",
+  "scope": "Single-host Docker independent-job correctness and quality; not a scaling comparison",
+  "model_type": "fleet_random_forest",
+  "estimator_params": {
+    "n_estimators": 40,
+    "max_depth": 20,
+    "max_features": "sqrt"
+  },
+  "model_seeds": [
+    42,
+    43,
+    44
+  ],
+  "split_seed": 2026,
+  "gateway": "http://localhost:8080",
+  "storage": "http://localhost:8081",
+  "host_platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "git_commit": "2cb2a8e6c9771ba95c9c885d922fe8d4e1e25327",
+  "source_sha256": {
+    "worker/fleet_trainer.py": "4d9c5078f459a2b4cb91b7fe7e4c339e604ec8a99f4e352bdf337ffbf252c93a",
+    "worker/real_training.go": "f6bb6388d475c780f0a108393391c44cdd9602fcc9655023081679f7562c5a3b",
+    "worker/main.go": "e9be866099a5b38ae3c0eea759a8842f0cab8351a71ed1759803d0f4c1b69d4e",
+    "orchestrator/cmd/orchestrator/main.go": "42459d99d8ac03d5421856debf95dc82d222d71e871c5c3983862d1eaf83277c",
+    "api-gateway/main.go": "64889e9b0a5d62d7a704528c313a8fe8487e33502f6272cf913f474768d0b0d0",
+    "benchmarks/run_mnist_fleet.py": "9e59a6956241d70e6de93138eb1bd93d18a2d82ab5006dc54d0a8227c3f820c0"
+  },
+  "jobs": [
+    {
+      "job_id": "20d5a59d-9236-4293-bd13-d469df855062",
+      "seed": 42,
+      "request": {
+        "model_type": "fleet_random_forest",
+        "dataset_path": "datasets/mnist/731c5ac60275/train-split2026.npz",
+        "epochs": 1,
+        "hyperparameters": {
+          "target_column": "label",
+          "random_state": "42",
+          "validation_dataset_path": "datasets/mnist/731c5ac60275/validation-split2026.npz",
+          "test_dataset_path": "datasets/mnist/731c5ac60275/test-split2026.npz",
+          "estimator_params": "{\"n_estimators\": 40, \"max_depth\": 20, \"max_features\": \"sqrt\"}"
+        }
+      },
+      "submission": {
+        "job_id": "20d5a59d-9236-4293-bd13-d469df855062",
+        "message": "Job created with 1 tasks",
+        "num_tasks": 1,
+        "status": "RUNNING"
+      },
+      "submitted_offset_s": 1.108299329644069e-05,
+      "submit_latency_s": 0.0965595830057282,
+      "latest_state": {
+        "completed_tasks": 1,
+        "current_accuracy": 0.9651,
+        "current_loss": 0.26400326392279316,
+        "job_id": "20d5a59d-9236-4293-bd13-d469df855062",
+        "message": "s3://artifacts/fleet/20d5a59d-9236-4293-bd13-d469df855062/result.json",
+        "progress": 100,
+        "status": "COMPLETED",
+        "total_tasks": 1
+      },
+      "terminal_observed_offset_s": 15.024513832999219,
+      "worker_id": "c2c64cd5-a0f7-450d-99ad-7d0fd9ae90ad",
+      "artifact_sha256": "097fdd5fcc53b21b4d78583b7d3af68f25333350a9a3cf6594d9936e0ae23318",
+      "artifact_uri": "s3://models/fleet/20d5a59d-9236-4293-bd13-d469df855062/11a0b540-cf46-494b-9c9f-30206a0de289/429ad929-4278-4b31-a689-44a0ae3e207e/model.pkl",
+      "metrics": {
+        "train_accuracy": 0.99942,
+        "test_accuracy": 0.9651,
+        "test_log_loss": 0.26400326392279316,
+        "validation_accuracy": 0.9672,
+        "validation_log_loss": 0.2679144522747669,
+        "fit_time_s": 11.05818538099993,
+        "elapsed_before_manifest_s": 13.644416088999947
+      },
+      "independently_verified": true
+    },
+    {
+      "job_id": "747602c3-41b7-4f48-b0f4-fa6d831ae33c",
+      "seed": 43,
+      "request": {
+        "model_type": "fleet_random_forest",
+        "dataset_path": "datasets/mnist/731c5ac60275/train-split2026.npz",
+        "epochs": 1,
+        "hyperparameters": {
+          "target_column": "label",
+          "random_state": "43",
+          "validation_dataset_path": "datasets/mnist/731c5ac60275/validation-split2026.npz",
+          "test_dataset_path": "datasets/mnist/731c5ac60275/test-split2026.npz",
+          "estimator_params": "{\"n_estimators\": 40, \"max_depth\": 20, \"max_features\": \"sqrt\"}"
+        }
+      },
+      "submission": {
+        "job_id": "747602c3-41b7-4f48-b0f4-fa6d831ae33c",
+        "message": "Job created with 1 tasks",
+        "num_tasks": 1,
+        "status": "RUNNING"
+      },
+      "submitted_offset_s": 0.09691241599648492,
+      "submit_latency_s": 0.0031452499970328063,
+      "latest_state": {
+        "completed_tasks": 1,
+        "current_accuracy": 0.9633,
+        "current_loss": 0.2626823975177241,
+        "job_id": "747602c3-41b7-4f48-b0f4-fa6d831ae33c",
+        "message": "s3://artifacts/fleet/747602c3-41b7-4f48-b0f4-fa6d831ae33c/result.json",
+        "progress": 100,
+        "status": "COMPLETED",
+        "total_tasks": 1
+      },
+      "terminal_observed_offset_s": 15.026222290995065,
+      "worker_id": "af0516e7-140b-47f1-966b-9d7725120505",
+      "artifact_sha256": "18a2e84c7a16e7ee19a5863106d3043fc2f43da943b0ecd27e180b6215ebd5d7",
+      "artifact_uri": "s3://models/fleet/747602c3-41b7-4f48-b0f4-fa6d831ae33c/3d554ae1-8b58-4a4c-9656-e5840509f730/235d2360-b7fb-4934-b634-cadeb10ded99/model.pkl",
+      "metrics": {
+        "train_accuracy": 0.9993,
+        "test_accuracy": 0.9633,
+        "test_log_loss": 0.2626823975177241,
+        "validation_accuracy": 0.9661,
+        "validation_log_loss": 0.2652957820031163,
+        "fit_time_s": 10.852297879999924,
+        "elapsed_before_manifest_s": 13.420734339000091
+      },
+      "independently_verified": true
+    },
+    {
+      "job_id": "d68bb3c0-8815-44a2-a220-84960650f092",
+      "seed": 44,
+      "request": {
+        "model_type": "fleet_random_forest",
+        "dataset_path": "datasets/mnist/731c5ac60275/train-split2026.npz",
+        "epochs": 1,
+        "hyperparameters": {
+          "target_column": "label",
+          "random_state": "44",
+          "validation_dataset_path": "datasets/mnist/731c5ac60275/validation-split2026.npz",
+          "test_dataset_path": "datasets/mnist/731c5ac60275/test-split2026.npz",
+          "estimator_params": "{\"n_estimators\": 40, \"max_depth\": 20, \"max_features\": \"sqrt\"}"
+        }
+      },
+      "submission": {
+        "job_id": "d68bb3c0-8815-44a2-a220-84960650f092",
+        "message": "Job created with 1 tasks",
+        "num_tasks": 1,
+        "status": "RUNNING"
+      },
+      "submitted_offset_s": 0.10037716599617852,
+      "submit_latency_s": 0.0029392500000540167,
+      "latest_state": {
+        "completed_tasks": 1,
+        "current_accuracy": 0.9626,
+        "current_loss": 0.2683547886879828,
+        "job_id": "d68bb3c0-8815-44a2-a220-84960650f092",
+        "message": "s3://artifacts/fleet/d68bb3c0-8815-44a2-a220-84960650f092/result.json",
+        "progress": 100,
+        "status": "COMPLETED",
+        "total_tasks": 1
+      },
+      "terminal_observed_offset_s": 25.18308566599444,
+      "worker_id": "af0516e7-140b-47f1-966b-9d7725120505",
+      "artifact_sha256": "f2c104293cefa9c5db0ad1979a1d1c565c67e96aa638b40e6c5cfafad5d54710",
+      "artifact_uri": "s3://models/fleet/d68bb3c0-8815-44a2-a220-84960650f092/ba26c1b7-5137-4594-a471-79f99733e3d8/4ec7ddfe-db1d-401c-bcb4-6d378b746e95/model.pkl",
+      "metrics": {
+        "train_accuracy": 0.99928,
+        "test_accuracy": 0.9626,
+        "test_log_loss": 0.2683547886879828,
+        "validation_accuracy": 0.9646,
+        "validation_log_loss": 0.2720681839616719,
+        "fit_time_s": 8.17295771199997,
+        "elapsed_before_manifest_s": 9.685416755000006
+      },
+      "independently_verified": true
+    }
+  ],
+  "containers": [
+    {
+      "name": "/tensorfleet-gap1-worker-2",
+      "image_id": "sha256:c244c296346818e539f25f5e8701c0ae1aa4bc5d38418727cbb37518eb0f1500",
+      "image": "tensorfleet-gap1-worker",
+      "cpu_quota_nanocpus": 1000000000,
+      "memory_limit_bytes": 2147483648
+    },
+    {
+      "name": "/tensorfleet-gap1-worker-1",
+      "image_id": "sha256:c244c296346818e539f25f5e8701c0ae1aa4bc5d38418727cbb37518eb0f1500",
+      "image": "tensorfleet-gap1-worker",
+      "cpu_quota_nanocpus": 1000000000,
+      "memory_limit_bytes": 2147483648
+    },
+    {
+      "name": "/tensorfleet-api-gateway",
+      "image_id": "sha256:5a8e4ff7898930de929dc51466fdbbe2401c320ecaa79cf4124e1abdbe665e0c",
+      "image": "tensorfleet-gap1-api-gateway",
+      "cpu_quota_nanocpus": 0,
+      "memory_limit_bytes": 0
+    },
+    {
+      "name": "/tensorfleet-storage",
+      "image_id": "sha256:bdb074a929404578433b775ee3d5bc88c991d1725dff99cf2bd08380098606a7",
+      "image": "tensorfleet-gap1-storage",
+      "cpu_quota_nanocpus": 0,
+      "memory_limit_bytes": 0
+    },
+    {
+      "name": "/tensorfleet-orchestrator",
+      "image_id": "sha256:cf71d68e0f85188a7722cfc041d16532f9a47cc346aba4a1f8feccae0dd7ce18",
+      "image": "tensorfleet-gap1-orchestrator",
+      "cpu_quota_nanocpus": 0,
+      "memory_limit_bytes": 0
+    },
+    {
+      "name": "/tensorfleet-redis",
+      "image_id": "sha256:858f009f9709ce576febc734aa78b8f6d624b82571f9ddb6bda4377c833b3499",
+      "image": "redis:7-alpine",
+      "cpu_quota_nanocpus": 0,
+      "memory_limit_bytes": 0
+    },
+    {
+      "name": "/tensorfleet-gap1-mongodb-1",
+      "image_id": "sha256:9650758f83af117fc96699f030a44f9300bed839734e67012f56df05b2fd6290",
+      "image": "mongo:7.0",
+      "cpu_quota_nanocpus": 0,
+      "memory_limit_bytes": 0
+    },
+    {
+      "name": "/tensorfleet-minio",
+      "image_id": "sha256:ef3d4011d4b1b50e36623f3626ae5233cea25d6c7ce031409fa0614bad366398",
+      "image": "tensorfleet-gap1-minio:source-2025-10-15",
+      "cpu_quota_nanocpus": 0,
+      "memory_limit_bytes": 0
+    }
+  ],
+  "batch_terminal_observed_s": 25.183741374996316,
+  "participating_workers": [
+    "af0516e7-140b-47f1-966b-9d7725120505",
+    "c2c64cd5-a0f7-450d-99ad-7d0fd9ae90ad"
+  ],
+  "independent_verification_finished_s": 29.033674082995276,
+  "summary": {
+    "train_accuracy": {
+      "mean": 0.9993333333333333,
+      "sample_stdev": 7.571877794401584e-05
+    },
+    "validation_accuracy": {
+      "mean": 0.9659666666666666,
+      "sample_stdev": 0.001305118130030093
+    },
+    "test_accuracy": {
+      "mean": 0.9636666666666667,
+      "sample_stdev": 0.0012897028081435059
+    },
+    "fit_time_s": {
+      "mean": 10.027813657666607,
+      "sample_stdev": 1.6096475856994799
+    }
+  },
+  "finished_at": "2026-10-16T03:46:08.148888+00:00"
+}

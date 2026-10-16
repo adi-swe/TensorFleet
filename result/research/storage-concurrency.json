@@ -1,0 +1,128 @@
+{
+  "status": "passed",
+  "concurrency": 4,
+  "downloads": [
+    {
+      "duration_s": 0.8424589170026593,
+      "bytes": 48447835,
+      "sha256": "1da1e7b5ac0d24fecd734221373b27d603fce50095315927a95ee204dc74be11",
+      "valid": true
+    },
+    {
+      "duration_s": 0.6324320420026197,
+      "bytes": 48447835,
+      "sha256": "1da1e7b5ac0d24fecd734221373b27d603fce50095315927a95ee204dc74be11",
+      "valid": true
+    },
+    {
+      "duration_s": 0.7310230420043808,
+      "bytes": 48447835,
+      "sha256": "1da1e7b5ac0d24fecd734221373b27d603fce50095315927a95ee204dc74be11",
+      "valid": true
+    },
+    {
+      "duration_s": 0.7909838749983464,
+      "bytes": 48447835,
+      "sha256": "1da1e7b5ac0d24fecd734221373b27d603fce50095315927a95ee204dc74be11",
+      "valid": true
+    },
+    {
+      "duration_s": 0.4945136249953066,
+      "bytes": 48447835,
+      "sha256": "1da1e7b5ac0d24fecd734221373b27d603fce50095315927a95ee204dc74be11",
+      "valid": true
+    },
+    {
+      "duration_s": 0.7242013329960173,
+      "bytes": 48447835,
+      "sha256": "1da1e7b5ac0d24fecd734221373b27d603fce50095315927a95ee204dc74be11",
+      "valid": true
+    },
+    {
+      "duration_s": 0.7798901249989285,
+      "bytes": 48447835,
+      "sha256": "1da1e7b5ac0d24fecd734221373b27d603fce50095315927a95ee204dc74be11",
+      "valid": true
+    },
+    {
+      "duration_s": 0.9595069579954725,
+      "bytes": 48447835,
+      "sha256": "1da1e7b5ac0d24fecd734221373b27d603fce50095315927a95ee204dc74be11",
+      "valid": true
+    },
+    {
+      "duration_s": 0.6979294170014327,
+      "bytes": 48447835,
+      "sha256": "1da1e7b5ac0d24fecd734221373b27d603fce50095315927a95ee204dc74be11",
+      "valid": true
+    },
+    {
+      "duration_s": 0.5657177079992834,
+      "bytes": 48447835,
+      "sha256": "1da1e7b5ac0d24fecd734221373b27d603fce50095315927a95ee204dc74be11",
+      "valid": true
+    },
+    {
+      "duration_s": 1.1714795000007143,
+      "bytes": 48447835,
+      "sha256": "1da1e7b5ac0d24fecd734221373b27d603fce50095315927a95ee204dc74be11",
+      "valid": true
+    },
+    {
+      "duration_s": 0.5199082079998334,
+      "bytes": 48447835,
+      "sha256": "1da1e7b5ac0d24fecd734221373b27d603fce50095315927a95ee204dc74be11",
+      "valid": true
+    },
+    {
+      "duration_s": 0.8194074999992154,
+      "bytes": 48447835,
+      "sha256": "1da1e7b5ac0d24fecd734221373b27d603fce50095315927a95ee204dc74be11",
+      "valid": true
+    },
+    {
+      "duration_s": 0.6286761250012205,
+      "bytes": 48447835,
+      "sha256": "1da1e7b5ac0d24fecd734221373b27d603fce50095315927a95ee204dc74be11",
+      "valid": true
+    },
+    {
+      "duration_s": 0.6381909999981872,
+      "bytes": 48447835,
+      "sha256": "1da1e7b5ac0d24fecd734221373b27d603fce50095315927a95ee204dc74be11",
+      "valid": true
+    },
+    {
+      "duration_s": 0.9536937909942935,
+      "bytes": 48447835,
+      "sha256": "1da1e7b5ac0d24fecd734221373b27d603fce50095315927a95ee204dc74be11",
+      "valid": true
+    },
+    {
+      "duration_s": 0.9860726249971776,
+      "bytes": 48447835,
+      "sha256": "1da1e7b5ac0d24fecd734221373b27d603fce50095315927a95ee204dc74be11",
+      "valid": true
+    },
+    {
+      "duration_s": 0.48359904200333403,
+      "bytes": 48447835,
+      "sha256": "1da1e7b5ac0d24fecd734221373b27d603fce50095315927a95ee204dc74be11",
+      "valid": true
+    },
+    {
+      "duration_s": 0.6791686659998959,
+      "bytes": 48447835,
+      "sha256": "1da1e7b5ac0d24fecd734221373b27d603fce50095315927a95ee204dc74be11",
+      "valid": true
+    },
+    {
+      "duration_s": 0.5978489170011017,
+      "bytes": 48447835,
+      "sha256": "1da1e7b5ac0d24fecd734221373b27d603fce50095315927a95ee204dc74be11",
+      "valid": true
+    }
+  ],
+  "wall_s": 3.8261361249969923,
+  "scope": "Model download integrity/throughput; client streaming, no server RSS bound claim"
+}

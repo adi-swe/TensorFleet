@@ -1,5 +1,10 @@
 # Distributed Training Platform — Overview & Transcript
 
+> Historical architecture/design discussion. Examples of gradient synchronization,
+> checkpoint resume, Redis leases, and elastic GPU training below are not proof
+> that those capabilities are implemented. Use [FLOW.md](FLOW.md) for the active
+> runtime and [scale.md](../scale.md) for tested claims and remaining work.
+
 **One-liner**
 
 “I built a distributed training platform that coordinates TensorFlow jobs across multiple nodes using gRPC for control, Redis for orchestration/state, and MinIO for model artifacts.”

@@ -1,0 +1,150 @@
+{
+  "status": "passed",
+  "checks": [
+    {
+      "name": "python-regressions",
+      "command": [
+        "/usr/local/bin/python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "worker/tests",
+        "-p",
+        "test_*.py",
+        "-v"
+      ],
+      "cwd": ".",
+      "environment_overrides": {},
+      "exit_code": 0,
+      "duration_s": 5.122832582994306,
+      "passed": true
+    },
+    {
+      "name": "orchestrator-race",
+      "command": [
+        "go",
+        "test",
+        "-race",
+        "./..."
+      ],
+      "cwd": "orchestrator",
+      "environment_overrides": {},
+      "exit_code": 0,
+      "duration_s": 4.035267541999929,
+      "passed": true
+    },
+    {
+      "name": "worker-race",
+      "command": [
+        "go",
+        "test",
+        "-race",
+        "./..."
+      ],
+      "cwd": "worker",
+      "environment_overrides": {},
+      "exit_code": 0,
+      "duration_s": 0.4715052920000744,
+      "passed": true
+    },
+    {
+      "name": "api-gateway-race",
+      "command": [
+        "go",
+        "test",
+        "-race",
+        "./..."
+      ],
+      "cwd": "api-gateway",
+      "environment_overrides": {},
+      "exit_code": 0,
+      "duration_s": 0.6743078339932254,
+      "passed": true
+    },
+    {
+      "name": "frontend-build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "cwd": "frontend",
+      "environment_overrides": {},
+      "exit_code": 0,
+      "duration_s": 4.505136666004546,
+      "passed": true
+    },
+    {
+      "name": "native-integration",
+      "command": [
+        "/usr/local/bin/python3",
+        "benchmarks/smoke_real_fleet.py"
+      ],
+      "cwd": ".",
+      "environment_overrides": {},
+      "exit_code": 0,
+      "duration_s": 11.02548954199301,
+      "passed": true
+    },
+    {
+      "name": "native-capabilities",
+      "command": [
+        "/usr/local/bin/python3",
+        "worker/fleet_trainer.py",
+        "--capabilities"
+      ],
+      "cwd": ".",
+      "environment_overrides": {},
+      "exit_code": 0,
+      "duration_s": 1.4168511660027434,
+      "passed": true
+    },
+    {
+      "name": "worker-linux-compile",
+      "command": [
+        "go",
+        "build",
+        "-o",
+        "/var/folders/m5/6hcfsflx1bvffnlh961tqmh40000gn/T/tensorfleet-portability-6ozbvebt/worker-linux",
+        "."
+      ],
+      "cwd": "worker",
+      "environment_overrides": {
+        "GOOS": "linux",
+        "GOARCH": "arm64",
+        "CGO_ENABLED": "0"
+      },
+      "exit_code": 0,
+      "duration_s": 4.7844533329989645,
+      "passed": true
+    },
+    {
+      "name": "worker-windows-compile",
+      "command": [
+        "go",
+        "build",
+        "-o",
+        "/var/folders/m5/6hcfsflx1bvffnlh961tqmh40000gn/T/tensorfleet-portability-6ozbvebt/worker-windows",
+        "."
+      ],
+      "cwd": "worker",
+      "environment_overrides": {
+        "GOOS": "windows",
+        "GOARCH": "arm64",
+        "CGO_ENABLED": "0"
+      },
+      "exit_code": 0,
+      "duration_s": 5.437048375002632,
+      "passed": true
+    }
+  ],
+  "source_sha256": {
+    "worker/training/__init__.py": "3558aff70506a5223701d810e7d410ecf610be0e0b9d4c249045cda380e7da20",
+    "worker/training/accelerated.py": "a6913df656a47da4508eb88cd1294e8ddac51a9f1de272dd83cec7cd59f261c1",
+    "worker/training/data.py": "c54e6118be350b9fb54889583f1804b54e55569197fe80f76b438eef5ed6cda2",
+    "worker/training/engine.py": "55c909cff5b52ebf63647357f6d88ad8f03bbacb418f11f68708f9bcc068a91f",
+    "worker/training/resources.py": "43387ebb3d73929f084d67c0301bb741de5899f5da717bea6d661fac3de7f91c",
+    "worker/training/storage.py": "985106f35d7837f66c110101bae753128a9ffb218b9d4de0dd4a236f8abf06ff"
+  }
+}

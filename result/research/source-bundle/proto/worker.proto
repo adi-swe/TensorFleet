@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package worker;
+
+option go_package = "github.com/tensorfleet/worker/proto/worker";
+
+service WorkerService {
+  rpc ExecuteTask(TaskRequest) returns (TaskResponse);
+  rpc GetWorkerStatus(WorkerStatusRequest) returns (WorkerStatusResponse);
+  rpc CancelTask(CancelTaskRequest) returns (CancelTaskResponse);
+}
+
+message TaskRequest {
+  string task_id = 1;
+  string job_id = 2;
+  string model_type = 3;
+  string dataset_path = 4;
+  map<string, string> hyperparameters = 5;
+  int32 epoch = 6;
+  int32 batch_start = 7;
+  int32 batch_end = 8;
+  string lease_token = 9;
+}
+
+message TaskResponse {
+  string task_id = 1;
+  bool success = 2;
+  string message = 3;
+  double loss = 4;
+  double accuracy = 5;
+  bytes model_weights = 6;
+}
+
+message WorkerStatusRequest {
+  string worker_id = 1;
+}
+
+message WorkerStatusResponse {
+  string worker_id = 1;
+  string status = 2;
+  int32 current_tasks = 3;
+  int32 completed_tasks = 4;
+  double cpu_usage = 5;
+  double memory_usage = 6;
+}
+
+message CancelTaskRequest {
+  string task_id = 1;
+}
+
+message CancelTaskResponse {
+  bool success = 1;
+  string message = 2;
+}

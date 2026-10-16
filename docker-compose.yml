@@ -87,6 +87,9 @@ services:
     environment:
       - PORT=50052
       - ORCHESTRATOR_ADDR=orchestrator:50051
+      - STORAGE_SERVICE_URL=http://storage:8081
+      - MAX_CONCURRENT_TASKS=${MAX_CONCURRENT_TASKS:-2}
+      - FETCH_INTERVAL_MS=${FETCH_INTERVAL_MS:-5000}
     depends_on:
       orchestrator:
         condition: service_healthy

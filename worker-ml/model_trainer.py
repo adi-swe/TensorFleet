@@ -23,7 +23,7 @@ from sklearn.metrics import (
     precision_score, recall_score, f1_score
 )
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler, LabelEncoder
+from sklearn.preprocessing import StandardScaler, LabelEncoder, OrdinalEncoder
 
 from config import get_logger
 
@@ -59,21 +59,21 @@ class MLModelTrainer:
         X = data.drop(columns=[target_column])
         y = data[target_column]
 
-        # Encode categorical features
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=test_size, random_state=42, stratify=y)
+        X_train, X_test = X_train.copy(), X_test.copy()
+        # Learn categorical vocabularies only from training observations.
         categorical_features = X.select_dtypes(include=['object']).columns
         for col in categorical_features:
-            le = LabelEncoder()
-            X[col] = le.fit_transform(X[col])
+            encoder = OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=-1)
+            X_train[col] = encoder.fit_transform(X_train[[col]]).ravel()
+            X_test[col] = encoder.transform(X_test[[col]]).ravel()
 
         # Encode target variable if it's categorical
         if y.dtype == 'object':
             le = LabelEncoder()
-            y = le.fit_transform(y)
-
-        # Split data
-        X_train, X_test, y_train, y_test = train_test_split(
-            X, y, test_size=test_size, random_state=42
-        )
+            y_train = le.fit_transform(y_train)
+            y_test = le.transform(y_test)
 
         # Scale numerical features
         scaler = StandardScaler()
@@ -190,17 +190,21 @@ class MLModelTrainer:
         epochs = int(hyperparameters.get('epochs', 10))
 
         # Create tf.data pipeline
+        X_train, X_validation, y_train, y_validation = train_test_split(
+            X_train, y_train, test_size=.2, stratify=y_train,
+            random_state=int(hyperparameters.get('random_state', 42)))
         train_dataset = tf.data.Dataset.from_tensor_slices((X_train, y_train))\
             .shuffle(buffer_size=len(X_train))\
             .batch(batch_size)
         test_dataset = tf.data.Dataset.from_tensor_slices((X_test, y_test))\
             .batch(batch_size)
+        validation_dataset = tf.data.Dataset.from_tensor_slices((X_validation, y_validation)).batch(batch_size)
 
         # Train model
         history = model.fit(
             train_dataset, 
             epochs=epochs, 
-            validation_data=test_dataset, 
+            validation_data=validation_dataset,
             verbose=0
         )
         training_time = time.time() - start_time

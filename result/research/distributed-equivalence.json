@@ -1,0 +1,12 @@
+{
+  "status": "passed",
+  "test_rows": 10000,
+  "test_accuracy": 0.9651,
+  "maximum_probability_difference": 0.0,
+  "tree_seeds_identical": true,
+  "participating_workers": [
+    "2d02682a-6e7c-4fd9-a796-6921a1eb4868",
+    "a9338f62-6bb8-4b3e-ab72-94953669f6e5"
+  ],
+  "reference": "result/20d5a59d-9236-4293-bd13-d469df855062-model.pkl"
+}

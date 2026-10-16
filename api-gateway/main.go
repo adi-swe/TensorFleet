@@ -19,6 +19,8 @@ import (
 	"github.com/go-redis/redis/v8"
 	"github.com/google/uuid"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/keepalive"
 
@@ -204,6 +206,9 @@ func (gs *GatewayServer) handleSubmitJob(c *gin.Context) {
 	}
 	if req.Epochs == 0 {
 		req.Epochs = 10
+		if strings.HasPrefix(req.ModelType, "fleet_") {
+			req.Epochs = 1
+		}
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -222,6 +227,19 @@ func (gs *GatewayServer) handleSubmitJob(c *gin.Context) {
 
 	if err != nil {
 		log.Printf("Error creating job: %v", err)
+		if status.Code(err) == codes.InvalidArgument {
+			c.JSON(http.StatusBadRequest, gin.H{"error": status.Convert(err).Message()})
+			return
+		}
+		if status.Code(err) == codes.ResourceExhausted {
+			c.Header("Retry-After", "1")
+			c.JSON(http.StatusTooManyRequests, gin.H{"error": status.Convert(err).Message()})
+			return
+		}
+		if status.Code(err) == codes.Unavailable {
+			c.JSON(http.StatusServiceUnavailable, gin.H{"error": status.Convert(err).Message()})
+			return
+		}
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create job"})
 		return
 	}
@@ -622,8 +640,9 @@ func (gs *GatewayServer) handleWorkerActivity(c *gin.Context) {
 			"current_job_id":      worker.CurrentJobId,
 			"tasks_completed":     worker.TasksCompleted,
 			"last_activity_time":  worker.LastActivityTime,
-			"cpu_usage":           50 + (len(worker.WorkerId)%30), // Simple deterministic "random" based on worker ID
-			"memory_usage":        40 + (len(worker.WorkerId)%40),
+			"cpu_usage":           nil, // No hardware sample is carried by this RPC.
+			"memory_usage":        nil,
+            "telemetry_available": false,
 			"uptime":              uptime,
 			"is_active":           isActive,
 		})

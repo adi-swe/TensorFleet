@@ -1,0 +1,118 @@
+syntax = "proto3";
+
+package orchestrator;
+
+option go_package = "github.com/tensorfleet/orchestrator/proto/orchestrator";
+
+service OrchestratorService {
+  rpc CreateTrainingJob(TrainingJobRequest) returns (TrainingJobResponse);
+  rpc GetJobStatus(GetJobStatusRequest) returns (GetJobStatusResponse);
+  rpc AssignTask(AssignTaskRequest) returns (AssignTaskResponse);
+  rpc ReportTaskCompletion(TaskCompletionRequest) returns (TaskCompletionResponse);
+  rpc UpdateJobMetrics(JobMetricsRequest) returns (JobMetricsResponse);
+  rpc CancelJob(CancelJobRequest) returns (CancelJobResponse);
+  rpc GetWorkerActivity(WorkerActivityRequest) returns (WorkerActivityResponse);
+}
+
+message TrainingJobRequest {
+  string job_id = 1;
+  string user_id = 2;
+  string model_type = 3;
+  string dataset_path = 4;
+  map<string, string> hyperparameters = 5;
+  int32 num_workers = 6;
+  int32 epochs = 7;
+}
+
+message TrainingJobResponse {
+  string job_id = 1;
+  string status = 2;
+  int32 num_tasks = 3;
+  string message = 4;
+}
+
+message GetJobStatusRequest {
+  string job_id = 1;
+}
+
+message GetJobStatusResponse {
+  string job_id = 1;
+  string status = 2;
+  int32 progress = 3;
+  int32 completed_tasks = 4;
+  int32 total_tasks = 5;
+  double current_loss = 6;
+  double current_accuracy = 7;
+  string message = 8;
+}
+
+message AssignTaskRequest {
+  string worker_id = 1;
+  repeated string capabilities = 2;
+}
+
+message AssignTaskResponse {
+  string task_id = 1;
+  string job_id = 2;
+  string model_type = 3;
+  string dataset_path = 4;
+  map<string, string> hyperparameters = 5;
+  int32 epoch = 6;
+  int32 batch_start = 7;
+  int32 batch_end = 8;
+  string lease_token = 9;
+}
+
+message TaskCompletionRequest {
+  string task_id = 1;
+  string job_id = 2;
+  string worker_id = 3;
+  bool success = 4;
+  string error_message = 5;
+  double loss = 6;
+  double accuracy = 7;
+  bytes model_weights = 8;
+  string lease_token = 9;
+}
+
+message TaskCompletionResponse {
+  bool acknowledged = 1;
+  string message = 2;
+}
+
+message JobMetricsRequest {
+  string job_id = 1;
+  int32 epoch = 2;
+  double loss = 3;
+  double accuracy = 4;
+}
+
+message JobMetricsResponse {
+  bool success = 1;
+}
+
+message CancelJobRequest {
+  string job_id = 1;
+}
+
+message CancelJobResponse {
+  bool success = 1;
+  string message = 2;
+  string previous_status = 3;
+}
+
+message WorkerActivityRequest {}
+
+message WorkerActivityResponse {
+  repeated WorkerInfo workers = 1;
+  int32 total_workers = 2;
+}
+
+message WorkerInfo {
+  string worker_id = 1;
+  string status = 2;
+  string current_task_id = 3;
+  string current_job_id = 4;
+  int32 tasks_completed = 5;
+  int64 last_activity_time = 6;
+}

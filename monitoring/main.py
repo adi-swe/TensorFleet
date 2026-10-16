@@ -195,8 +195,8 @@ def get_worker_activity():
             'current_job_id': worker_data.get('current_job_id', ''),
             'tasks_completed': worker_data.get('tasks_completed', 0),
             'last_activity_time': last_activity,
-            'cpu_usage': worker_data.get('cpu_usage', 0),
-            'memory_usage': worker_data.get('memory_usage', 0),
+            'cpu_usage': worker_data.get('cpu_usage'),
+            'memory_usage': worker_data.get('memory_usage'),
             'uptime': current_time - worker_data.get('registered_at', current_time),
             'is_active': is_active
         })

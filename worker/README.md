@@ -1,5 +1,11 @@
 # ⚡ Worker Service
 
+Real classical training, distributed forest aggregation and optional native
+MPS/CUDA logistic execution are available through the explicit
+`fleet_*` job types. See [Real fleet training](../docs/REAL_FLEET_TRAINING.md)
+for submission, artifact verification, and current limitations. The simulation
+described below remains the legacy path for other job types.
+
 The Worker service is the **high-performance computational engine** of TensorFleet, executing **distributed ML training tasks** with advanced neural network simulation, **real-time metrics reporting**, **auto-scaling capabilities**, and seamless **gRPC integration** with the orchestrator's intelligent scheduling system.
 
 ## 🚀 Overview
@@ -118,7 +124,7 @@ go mod tidy
 protoc --go_out=. --go-grpc_out=. ../proto/*.proto
 
 # Run the service
-go run main.go
+go run .
 ```
 
 ## 🔄 Task Execution Flow
@@ -394,13 +400,13 @@ worker/
 
 ```bash
 # Development build
-go build -o worker main.go
+go build -o worker .
 
 # Production build with optimizations
-go build -ldflags="-w -s" -o worker main.go
+go build -ldflags="-w -s" -o worker .
 
 # Multi-platform builds
-GOOS=linux GOARCH=amd64 go build -o worker-linux main.go
+GOOS=linux GOARCH=amd64 go build -o worker-linux .
 ```
 
 ## 🐛 Troubleshooting
@@ -430,7 +436,7 @@ GOOS=linux GOARCH=amd64 go build -o worker-linux main.go
 ```bash
 # Enable verbose logging
 export LOG_LEVEL=debug
-go run main.go
+go run .
 
 # Profile performance
 go tool pprof http://localhost:2112/debug/pprof/profile
@@ -462,4 +468,4 @@ For detailed work distribution, see [docs/TEAM_WORK_DIVISION.md](../docs/TEAM_WO
 
 **Last Updated**: December 21, 2025  
 **Version**: 2.0  
-**Status**: Production Ready
+**Status**: Research implementation; validated scope and remaining gaps are in `../scale.md`

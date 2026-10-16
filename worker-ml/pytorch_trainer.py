@@ -23,6 +23,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, TensorDataset
 from sklearn.metrics import precision_score, recall_score, f1_score
+from sklearn.model_selection import train_test_split
 
 from config import get_logger
 
@@ -238,15 +239,18 @@ def train_pytorch_model(
     torch.manual_seed(int(hyperparameters.get('random_state', 42)))
 
     num_features = X_train.shape[1]
-    num_classes = int(len(np.unique(np.concatenate([y_train, y_test]))))
+    num_classes = int(len(np.unique(y_train)))
     batch_size = int(hyperparameters.get('batch_size', 32))
     epochs = int(hyperparameters.get('epochs', 10))
     learning_rate = float(hyperparameters.get('learning_rate', 0.001))
     early_stopping = str(hyperparameters.get('early_stopping', 'false')).lower() in ('true', '1')
     patience = int(hyperparameters.get('patience', 5))
 
-    X_train_t = torch.as_tensor(np.asarray(X_train), dtype=torch.float32)
-    y_train_t = torch.as_tensor(np.asarray(y_train), dtype=torch.long)
+    X_fit, X_validation, y_fit, y_validation = train_test_split(
+        np.asarray(X_train), np.asarray(y_train), test_size=.2, stratify=y_train,
+        random_state=int(hyperparameters.get('random_state', 42)))
+    X_train_t = torch.as_tensor(X_fit, dtype=torch.float32)
+    y_train_t = torch.as_tensor(y_fit, dtype=torch.long)
     X_test_t = torch.as_tensor(np.asarray(X_test), dtype=torch.float32)
     y_test_t = torch.as_tensor(np.asarray(y_test), dtype=torch.long)
 
@@ -256,6 +260,9 @@ def train_pytorch_model(
     test_loader = DataLoader(
         TensorDataset(X_test_t, y_test_t), batch_size=batch_size
     )
+    validation_loader = DataLoader(TensorDataset(
+        torch.as_tensor(X_validation, dtype=torch.float32),
+        torch.as_tensor(y_validation, dtype=torch.long)), batch_size=batch_size)
 
     model = build_model(algorithm, num_features, num_classes, hyperparameters).to(device)
     criterion = nn.CrossEntropyLoss()
@@ -267,6 +274,8 @@ def train_pytorch_model(
     best_val_loss = float('inf')
     best_state = None
     epochs_without_improvement = 0
+    examples_processed = 0
+    fit_started = time.perf_counter()
 
     for epoch in range(epochs):
         model.train()
@@ -281,10 +290,11 @@ def train_pytorch_model(
             running_loss += loss.item() * xb.size(0)
             correct += (logits.argmax(dim=1) == yb).sum().item()
             count += xb.size(0)
+            examples_processed += xb.size(0)
 
         train_loss = running_loss / count
         train_acc = correct / count
-        val_loss, val_acc, _ = _evaluate(model, test_loader, criterion, device)
+        val_loss, val_acc, _ = _evaluate(model, validation_loader, criterion, device)
 
         history['loss'].append(train_loss)
         history['accuracy'].append(train_acc)
@@ -306,6 +316,9 @@ def train_pytorch_model(
                 logger.info('Early stopping at epoch %d (patience %d)', epoch + 1, patience)
                 break
 
+    if device.type == 'mps': torch.mps.synchronize()
+    elif device.type == 'cuda': torch.cuda.synchronize()
+    fit_with_validation_s = time.perf_counter() - fit_started
     if best_state is not None:
         model.load_state_dict(best_state)
 
@@ -338,6 +351,10 @@ def train_pytorch_model(
         'recall': float(recall),
         'f1_score': float(f1),
         'training_time': training_time,
+        'fit_with_validation_s': fit_with_validation_s,
+        'examples_processed': examples_processed,
+        'epochs_completed': len(history['loss']),
+        'fit_rows': len(y_fit), 'validation_rows': len(y_validation),
         'device': str(device),
         'num_parameters': sum(p.numel() for p in model.parameters()),
         'history': {k: [float(val) for val in v] for k, v in history.items()},
